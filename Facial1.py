@@ -31,6 +31,7 @@ while True:
                     features_dict[feature] = face_landmarks_list[i][feature]
 
         print("Ran",count,"times")
+        print('lLPAPLAPLAPAL')
 
         count=0
         for feature in features_dict:

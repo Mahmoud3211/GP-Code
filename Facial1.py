@@ -20,7 +20,7 @@ while True:
         for i in range(0,len(face_landmarks_list)):
             for feature in face_landmarks_list[0]:
                 count+=1
-                print("FEATURE is ",feature)
+                # print("FEATURE is ",feature)
                 if feature in features_dict:
                     # append the new number to the existing array at this slot
                     #print("Appending...",face_landmarks_list[0][feature])

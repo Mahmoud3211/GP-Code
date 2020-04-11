@@ -3,6 +3,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import keras
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D, Dropout, GlobalAveragePooling2D, Activation, BatchNormalization
 from keras.layers import Flatten, Dense
@@ -128,7 +129,7 @@ def calls():
 
     class myCallBack(keras.callbacks.Callback):
         def on_epoch_end(self, epoch, logs={}):
-            if (logs.get('val_acc') > 0.90):
+            if (logs.get('val_accuracy') > 0.90):
                 print ('\nReached 0.998 Validation accuracy!')
                 self.model.stop_training = True
 

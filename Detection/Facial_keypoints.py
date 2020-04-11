@@ -8,7 +8,7 @@ from keras.layers import Conv2D, MaxPooling2D, Dropout, GlobalAveragePooling2D, 
 from keras.layers import Flatten, Dense
 from keras.layers.normalization import BatchNormalization
 from keras import optimizers
-from keras.callbacks import ModelCheckpoint, History
+from keras.callbacks import ModelCheckpoint, History, LearningRateScheduler, TensorBoard, EarlyStopping, ReduceLROnPlateau
 from datetime import datetime
 
 def data_loader():
@@ -102,13 +102,44 @@ def create_model():
     
     # Convert all values to 1D array
     model.add(Flatten())
-    
+
+    model.add(Dense(256, activation='relu'))
     model.add(Dense(512, activation='relu'))
     model.add(Dropout(0.2))
 
     model.add(Dense(30))
     
     return model
+def calls():
+    checkpoint = ModelCheckpoint(
+        filepath='checkpoints\checkpoint.hdf5',
+        monitor='val_loss',
+        verbose=1,
+        save_best_only=True,
+        save_weights_only=False,
+        mode='auto',
+        period=1)
+
+    early = EarlyStopping(monitor='val_loss',
+                        min_delta=0,
+                        patience=10,
+                        verbose=1,
+                        mode='auto')
+
+    class myCallBack(keras.callbacks.Callback):
+        def on_epoch_end(self, epoch, logs={}):
+            if (logs.get('val_acc') > 0.90):
+                print ('\nReached 0.998 Validation accuracy!')
+                self.model.stop_training = True
+
+    my_call = myCallBack()
+
+    reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.5, patience=5,
+                                verbose=1, mode='auto', min_delta=0,
+                                cooldown=0, min_lr=1.0e-04)
+
+    lr_schedule = LearningRateScheduler(lambda epoch: 1e-5 * 10**(epoch / 10))
+    return [checkpoint, my_call, early]#lr_schedule
 
 def plot_charts(history):
     acc = history.history['accuracy']
@@ -139,14 +170,10 @@ if __name__ == "__main__":
 
     model = create_model()
     hist = History()
-
-    now = datetime.now()
-    timestamp = datetime.timestamp(now)
-    checkpointer = ModelCheckpoint(filepath='checkpoints\checkpoint.hdf5', 
-                               verbose=1, save_best_only=True)
+    mon = calls()
 
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
-    model_fit = model.fit(X_train, y_train, validation_split=0.2, epochs=epochs, batch_size=batch_size, callbacks=[checkpointer, hist], verbose=1)
+    model_fit = model.fit(X_train, y_train, validation_split=0.2, epochs=epochs, batch_size=batch_size, callbacks=mon, verbose=1)
     
     plot_charts(model_fit)
 

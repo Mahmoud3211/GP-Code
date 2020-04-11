@@ -51,17 +51,22 @@ def create_model():
     model = Sequential()
     
     model.add(Conv2D(16, (3,3), padding='same', activation='relu', input_shape=X_train.shape[1:])) # Input shape: (96, 96, 1)
+    model.add(Conv2D(16, (3,3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     
+    model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
     model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     
     model.add(Conv2D(64, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3,3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     
     model.add(Conv2D(128, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(128, (3,3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     
+    model.add(Conv2D(256, (3,3), padding='same', activation='relu'))
     model.add(Conv2D(256, (3,3), padding='same', activation='relu'))
     model.add(MaxPooling2D(pool_size=2))
     
@@ -76,8 +81,8 @@ def create_model():
     return model
 
 def plot_charts(history):
-  acc = history.history['acc']
-  val_acc = history.history['val_acc']
+  acc = history.history['accuracy']
+  val_acc = history.history['val_accuracy']
   loss = history.history['loss']
   val_loss = history.history['val_loss']
 

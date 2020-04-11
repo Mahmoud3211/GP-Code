@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D, Dropout, GlobalAveragePooling2D, Activation
+from keras.layers import Conv2D, MaxPooling2D, Dropout, GlobalAveragePooling2D, Activation, BatchNormalization
 from keras.layers import Flatten, Dense
 from keras.layers.normalization import BatchNormalization
 from keras import optimizers
@@ -50,24 +50,54 @@ def sanity_check():
 def create_model():
     model = Sequential()
     
-    model.add(Conv2D(16, (3,3), padding='same', activation='relu', input_shape=X_train.shape[1:])) # Input shape: (96, 96, 1)
-    model.add(Conv2D(16, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(16, (3,3), padding='same', input_shape=X_train.shape[1:])) # Input shape: (96, 96, 1)
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(16, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
     model.add(MaxPooling2D(pool_size=2))
     
-    model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
-    model.add(Conv2D(32, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(32, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(32, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
     model.add(MaxPooling2D(pool_size=2))
     
-    model.add(Conv2D(64, (3,3), padding='same', activation='relu'))
-    model.add(Conv2D(64, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(64, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(64, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
     model.add(MaxPooling2D(pool_size=2))
     
-    model.add(Conv2D(128, (3,3), padding='same', activation='relu'))
-    model.add(Conv2D(128, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(128, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(128, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
     model.add(MaxPooling2D(pool_size=2))
     
-    model.add(Conv2D(256, (3,3), padding='same', activation='relu'))
-    model.add(Conv2D(256, (3,3), padding='same', activation='relu'))
+    model.add(Conv2D(256, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(256, (3,3), padding='same'))
+    model.add(BatchNormalization())
+    model.add(Activation('relu'))
+    model.add(Dropout(0.2))
     model.add(MaxPooling2D(pool_size=2))
     
     # Convert all values to 1D array
@@ -81,26 +111,26 @@ def create_model():
     return model
 
 def plot_charts(history):
-  acc = history.history['accuracy']
-  val_acc = history.history['val_accuracy']
-  loss = history.history['loss']
-  val_loss = history.history['val_loss']
+    acc = history.history['accuracy']
+    val_acc = history.history['val_accuracy']
+    loss = history.history['loss']
+    val_loss = history.history['val_loss']
 
-  epochs = range(len(acc))
+    epochs = range(len(acc))
 
-  plt.plot(epochs, acc, 'r', label = 'Training Accuracy')
-  plt.plot(epochs, val_acc, 'b', label = 'Validation Accuracy')
-  plt.title('Training and validation accuracy')
-  plt.legend()
-  plt.figure()
+    plt.plot(epochs, acc, 'r', label = 'Training Accuracy')
+    plt.plot(epochs, val_acc, 'b', label = 'Validation Accuracy')
+    plt.title('Training and validation accuracy')
+    plt.legend()
+    plt.figure()
+    plt.show()
 
-  plt.plot(epochs, loss, 'r', label = 'Training Loss')
-  plt.plot(epochs, val_loss, 'b', label = 'Validation Loss')
-  plt.title('Training and validation Loss')
-  plt.legend()
-  plt.figure()
-
-  plt.show()
+    plt.plot(epochs, loss, 'r', label = 'Training Loss')
+    plt.plot(epochs, val_loss, 'b', label = 'Validation Loss')
+    plt.title('Training and validation Loss')
+    plt.legend()
+    plt.figure()
+    plt.show()
 
 if __name__ == "__main__":
     X_train, y_train = data_loader()
@@ -112,7 +142,7 @@ if __name__ == "__main__":
 
     now = datetime.now()
     timestamp = datetime.timestamp(now)
-    checkpointer = ModelCheckpoint(filepath=f'checkpoints\checkpoint_{timestamp}.hdf5', 
+    checkpointer = ModelCheckpoint(filepath='checkpoints\checkpoint.hdf5', 
                                verbose=1, save_best_only=True)
 
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])

@@ -3,13 +3,13 @@ import numpy as np
 from matplotlib import pyplot as plt
 import cv2
 import time
-import generate_keypoints
+from generate_keypoints import Gen_keypoins
 
 def main():
     
-    points = generate_keypoints.Gen_keypoins()
+    gk = Gen_keypoins()
     # input video file path
-    input_file = 'testVideo.mp4'
+    input_file = r'D:\Mahmoud Nada\GP Code\Video test\2.mp4'
 
 
     # output file path
@@ -31,13 +31,13 @@ def main():
         
         frame_no += 1
         ret, frame = cap.read()
-        if frame_no > 75*30:
-            break
-        if frame_no in range(60*30, 75*30):
-            points = points.get_points_main(frame)
+        # if frame_no > 75*30:
+        #     break
+        if True:# frame_no in range(60*30, 75*30):
+            points = gk.get_points_main(frame)
 
             try:
-                overlay = frame.copy()
+                overlay = frame #.copy()
             except Exception as e:
                 print(e)
                 break
@@ -65,7 +65,7 @@ def main():
             cv2.addWeighted(overlay, opacity, frame, 1 - opacity, 0, frame)
 
             out.write(frame)
-            # cv2.imshow('frame',frame)
+            cv2.imshow('frame',frame)
             b = time.time()
             print(str((b-a)))
 

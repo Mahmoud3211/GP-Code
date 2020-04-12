@@ -8,11 +8,10 @@ import time
 
 class Gen_keypoins():
     def __init__(self):
-        self.model = load_model('model_1586626246.826244.h5')
+        self.model = load_model('checkpoints\model_1586626246.826244.h5')
+        print(self.model.summary())
 
-    def get_points_main(self, img):
-
-        def detect_points(face_img):
+    def detect_points(self, face_img):
             me  = np.array(face_img)/255
             x_test = np.expand_dims(me, axis=0)
             x_test = np.expand_dims(x_test, axis=3)
@@ -22,6 +21,8 @@ class Gen_keypoins():
 
 
             return label_points
+
+    def get_points_main(self, img):
 
         # load haarcascade
         face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
@@ -62,7 +63,7 @@ class Gen_keypoins():
             scale_val_x = w/96
             scale_val_y = h/96
 
-            label_point = detect_points(just_face)
+            label_point = self.detect_points(just_face)
 
             all_x_cords.append((label_point[::2]*scale_val_x)+x)
             all_y_cords.append((label_point[1::2]*scale_val_y)+y)

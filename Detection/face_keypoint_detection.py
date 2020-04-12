@@ -9,7 +9,7 @@ def main():
     
     gk = Gen_keypoins()
     # input video file path
-    input_file = r'D:\Mahmoud Nada\GP Code\Video test\2.mp4'
+    input_file = r'D:\Mahmoud Nada\GP Code\Video test\1.mp4'
 
 
     # output file path
@@ -35,7 +35,7 @@ def main():
         #     break
         if True:# frame_no in range(60*30, 75*30):
             points = gk.get_points_main(frame)
-
+            print(points)
             try:
                 overlay = frame #.copy()
             except Exception as e:
@@ -66,9 +66,9 @@ def main():
 
             out.write(frame)
             cv2.imshow('frame',frame)
-            cv2.imshow('overlay',overlay)
+            # cv2.imshow('overlay',overlay)
             b = time.time()
-            print(str((b-a)))
+            # print(str((b-a)))
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break

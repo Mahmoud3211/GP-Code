@@ -33,7 +33,8 @@ class Gen_keypoins():
             default_img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             gray_img = cv2.cvtColor(default_img, cv2.COLOR_RGB2GRAY)
             faces = face_cascade.detectMultiScale(gray_img, 1.3, 5)
-    #         faces = face_cascade.detectMultiScale(gray_img, 4, 6)
+            # faces = face_cascade.detectMultiScale(gray_img, 4, 6)
+            print(f'# faces: {len(faces)}')
 
         except:
             return []
@@ -45,7 +46,6 @@ class Gen_keypoins():
 
         all_x_cords = []
         all_y_cords = []
-
 
         for i, (x,y,w,h) in enumerate(faces):
 

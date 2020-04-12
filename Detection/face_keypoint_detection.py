@@ -66,6 +66,7 @@ def main():
 
             out.write(frame)
             cv2.imshow('frame',frame)
+            cv2.imshow('overlay',overlay)
             b = time.time()
             print(str((b-a)))
 

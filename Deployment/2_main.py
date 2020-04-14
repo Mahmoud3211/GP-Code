@@ -12,7 +12,7 @@ import threading
 import cv2
 import tensorflow as tf
 from tensorflow.python.keras.backend import set_session
-
+# this is a comment
 app = Flask(__name__)
 sess_flask = Session()
 

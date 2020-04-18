@@ -7,7 +7,13 @@ from flask.ext.session import Session
 from werkzeug.utils import secure_filename
 import numpy as np
 from keras.models import load_model
+
+import os,sys,inspect
+current_dir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parent_dir = os.path.dirname(current_dir)
+sys.path.insert(0, parent_dir) 
 from data import DataSet
+
 import threading
 import cv2
 import tensorflow as tf
@@ -98,22 +104,22 @@ def upload_file():
 	if request.method == 'POST':
         # check if the post request has the file part
 		if 'file-upload-field' not in request.files:
-			flash('No file part')
+			
 			return redirect(request.url)
 		file = request.files['file-upload-field']
 		if file.filename == '':
-			flash('No file selected for uploading')
+			
 			return redirect(request.url)
 		if file and allowed_file(file.filename):
 			
 			filename = secure_filename(file.filename)
 			path = os.path.join('uploaded', filename) 
-			print(path)
+			
 			file.save(path)
 			flash(filename)
 
 			prediction = preprocessVideo(path)
-			print(prediction)
+			
 
 			return redirect('/')
 		else:

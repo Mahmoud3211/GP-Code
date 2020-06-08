@@ -1,21 +1,29 @@
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+<script src="loadModel.js"> </script>
+</head>
 
 <div style="text-align: center;">
     <label for="files">Select Video</label>
     <input type="file" id="file" name="fileSelector" onchange="playVid(this)">
-    
+
     <br><br>
-    
+
     <video id="video1" width="420" height="380" controls muted>
         <source src="" type="video/*">
-        
+
     </video>
 
     <script>
+        const loadM = new loadModel()
+        loadM.print()
+        
+
         function playVid(input){
             let vidName = input.files[0]['name']
             console.log(vidName)
             var vidElem = document.getElementById('video1')
-            
+
             vidElem.src = vidName;
 
             vidElem.play()
@@ -23,5 +31,5 @@
     </script>
 
 
-    
+
 </div>

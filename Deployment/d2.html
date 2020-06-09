@@ -1,0 +1,101 @@
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
+    <script src="loadModel.js"> </script>
+    <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
+    <p id="status">OpenCV.js is loading...</p>
+</head>
+<body>
+    <div style="text-align: center;">
+        <video id="videoInput" width="420" height="380" muted autoplay>
+            <source src="allah_9.mp4" type="video/mp4">
+            <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
+                Your browser does not support HTML video.
+        </video>
+        <br><br>
+
+        <button id="start" value=1 onclick="updateStreaming(this)">Start</button>
+
+        <button id="stop" value=0 onclick="updateStreaming(this)">Stop</button>
+
+        <button id="predict" onclick="makePrediction()">Predict</button>
+
+
+    </div>
+    <br>
+    <div class="inputoutput" style="text-align: center;">
+        <canvas id="canvasOutput" ></canvas>
+        <div class="caption">canvasOutput</div>
+    </div>
+    
+    <script>
+        streaming = 0 
+        frames = []
+
+        function updateStreaming(input){
+            streaming = input.value
+            if (streaming == 1){
+                console.log('Start')
+                onOpenCvReady()
+            }
+            else{
+                console.log('Stop')
+            }
+        }
+        function checkStreaming(){
+            return streaming
+        }
+        function makePrediction(){
+
+        }
+        function onOpenCvReady() {
+            document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
+            
+            let video = document.getElementById('videoInput');
+            let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
+            let dst = new cv.Mat();
+            let cap = new cv.VideoCapture(video);
+            let dsize = new cv.Size(300, 300);
+            
+
+            const FPS = 30;
+            function processVideo() {
+                try {
+                    streaming = checkStreaming()
+                    if (streaming == 0) {
+                        // clean and stop.
+                        src.delete();
+                        dst.delete();
+                        video.pause()
+                        return;
+                    }
+                    video.play()
+                    let begin = Date.now();
+                    // start processing.
+                    cap.read(src);
+                    cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+                    cv.resize(dst, dst, dsize, 0, 0, cv.INTER_AREA);
+                    cv.imshow('canvasOutput', dst);
+
+                    frames.push(dst)
+                    console.log('Length of the Video Frames -> ')
+                    console.log(frames.length)
+                    // if (frames.length >= 30){
+                    //     clearTimeout(t)
+                    // }
+                    // console.log(frames)
+
+                    // schedule the next one.
+                    let delay = 1000/FPS - (Date.now() - begin);
+                    t = setTimeout(processVideo, delay);
+
+                } catch (err) {
+                    console.log(err);
+                }
+            };
+
+            // schedule the first one.
+            t = setTimeout(processVideo, 0);
+            }
+                    
+    </script>    
+</body>

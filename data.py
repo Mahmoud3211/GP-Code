@@ -45,7 +45,7 @@ class DataSet():
 
         # Get the data.
         self.data = self.get_data()
-        self.max_frames = np.array(self.data)[:,-1].astype(int).max() # max number of frames a video can have for us to use it
+        self.max_frames = 300# np.array(self.data)[:,-1].astype(int).max() # max number of frames a video can have for us to use it
         print(f'Max frames => {self.max_frames}')
         # Get the classes.
         self.classes = self.get_classes()
@@ -92,6 +92,11 @@ class DataSet():
             return classes[:self.class_limit]
         else:
             return classes
+
+    def export_classes_to_file(self):
+        with open(os.path.join('Deployment', 'Classes.txt'), 'w') as f:
+            for item in self.classes:
+                f.write("%s\n" % item)
 
     def get_class_one_hot(self, class_str):
         """Given a class as a string, return its number in the classes

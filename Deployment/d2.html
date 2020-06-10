@@ -5,8 +5,14 @@
 </head>
 <body>
     <div style="text-align: center;">
+        <label for="classReader">Select Classes File</label>
+        <input type="file" accept=".txt" id="classReader">
+        <br>
+        <label for="videoSelect">Select Video</label>
+        <input type="file" id="videoSelect" accept="video/*">
+        <br>
         <video id="videoInput" width="420" height="380" muted>
-            <source src="allah_9.mp4" type="video/mp4">
+            <source src="" type="video/mp4">
             <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
                 Your browser does not support HTML video.
         </video>
@@ -21,7 +27,11 @@
 
     </div>
     <br>
-    <div class="inputoutput" style="text-align: center;">
+    <div style="text-align: center;">
+        <p id="predStatus">Prediction Area</p>
+    </div>
+    <br>
+    <div class="inputoutput" style="text-align: center;" hidden>
         <canvas id="canvasOutput" ></canvas>
         <div class="caption">canvasOutput</div>
     </div>
@@ -29,6 +39,19 @@
     <script>
         let video = document.getElementById('videoInput');
         let can = document.getElementById('canvasOutput');
+        let classes= [];
+        let classesInput = document.getElementById('classReader').addEventListener('change', function(){
+            var fr = new FileReader();
+            fr.onload = function(){
+                classes = fr.result.split("\n");
+            }
+            fr.readAsText(this.files[0]);
+        })
+        
+        let videoSelect = document.getElementById('videoSelect').addEventListener('change', function(){
+            video.src = this.files[0]['name']
+        })
+        
 
         streaming = 0
         frames = []
@@ -49,6 +72,7 @@
             return streaming
         }
         async function makePrediction(){
+            document.getElementById('predStatus').innerHTML = "Waiting Prediction...";
             rescaledFrames = [];
             var i;
             for (i = 0; i < 30; i++) {
@@ -61,7 +85,9 @@
             // console.log(tf.tensor(frames[0], frames[1]))
             // console.log(tf.tensor(rescaledFrames).shape)
             pred = await loadM.predict(rescaledFrames)
-            console.log(pred)
+            alert("Class Predicted is -> " + classes[pred])
+            document.getElementById('predStatus').innerHTML = "Class Predicted is -> " + classes[pred];
+
         }
         function onOpenCvReady(firstTime = 0) {
 

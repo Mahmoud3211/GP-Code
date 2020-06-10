@@ -22,7 +22,7 @@ class loadModel{
         });
 
         
-        return await (await predictedClass.data())[0]
+        return (await predictedClass.data())[0]
         //   document.getElementById("prediction").innerText = predictionText;
       }
 }

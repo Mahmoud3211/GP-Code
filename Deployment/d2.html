@@ -1,12 +1,11 @@
 <head>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"> </script>
     <script src="loadModel.js"> </script>
-    <script async src="opencv.js" onload="onOpenCvReady();" type="text/javascript"></script>
-    <p id="status">OpenCV.js is loading...</p>
+    <script async src="opencv.js" onload="onOpenCvReady(1);" type="text/javascript"></script>
 </head>
 <body>
     <div style="text-align: center;">
-        <video id="videoInput" width="420" height="380" muted autoplay>
+        <video id="videoInput" width="420" height="380" muted>
             <source src="allah_9.mp4" type="video/mp4">
             <!-- <source src="mov_bbb.ogg" type="video/ogg"> -->
                 Your browser does not support HTML video.
@@ -26,10 +25,15 @@
         <canvas id="canvasOutput" ></canvas>
         <div class="caption">canvasOutput</div>
     </div>
-    
+
     <script>
-        streaming = 0 
+        let video = document.getElementById('videoInput');
+        let can = document.getElementById('canvasOutput');
+
+        streaming = 0
         frames = []
+        const loadM = new loadModel()
+        loadM.prepareModel()
 
         function updateStreaming(input){
             streaming = input.value
@@ -44,18 +48,32 @@
         function checkStreaming(){
             return streaming
         }
-        function makePrediction(){
+        async function makePrediction(){
+            rescaledFrames = [];
+            var i;
+            for (i = 0; i < 30; i++) {
+                rescaledFrames.push(frames[i])
+            }
 
+            // console.log(frames[0])
+            // console.log(tf.stack(rescaledFrames).shape)
+            // tf.tensor(frames[0], frames[1]).print()
+            // console.log(tf.tensor(frames[0], frames[1]))
+            // console.log(tf.tensor(rescaledFrames).shape)
+            pred = await loadM.predict(rescaledFrames)
+            console.log(pred)
         }
-        function onOpenCvReady() {
-            document.getElementById('status').innerHTML = 'OpenCV.js is ready.';
-            
-            let video = document.getElementById('videoInput');
+        function onOpenCvReady(firstTime = 0) {
+
+            if(firstTime)
+                alert('OpenCV.js is ready.')
+
+
             let src = new cv.Mat(video.height, video.width, cv.CV_8UC4);
             let dst = new cv.Mat();
             let cap = new cv.VideoCapture(video);
             let dsize = new cv.Size(300, 300);
-            
+
 
             const FPS = 30;
             function processVideo() {
@@ -72,11 +90,11 @@
                     let begin = Date.now();
                     // start processing.
                     cap.read(src);
-                    cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
-                    cv.resize(dst, dst, dsize, 0, 0, cv.INTER_AREA);
+                    // cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY);
+                    cv.resize(src, dst, dsize, 0, 0, cv.INTER_AREA);
                     cv.imshow('canvasOutput', dst);
 
-                    frames.push(dst)
+                    frames.push(tf.browser.fromPixels(can))
                     console.log('Length of the Video Frames -> ')
                     console.log(frames.length)
                     // if (frames.length >= 30){
@@ -96,6 +114,6 @@
             // schedule the first one.
             t = setTimeout(processVideo, 0);
             }
-                    
-    </script>    
+
+    </script>
 </body>

@@ -40,6 +40,7 @@
         let video = document.getElementById('videoInput');
         let can = document.getElementById('canvasOutput');
         let classes= [];
+        frames = []
         let classesInput = document.getElementById('classReader').addEventListener('change', function(){
             var fr = new FileReader();
             fr.onload = function(){
@@ -50,11 +51,11 @@
         
         let videoSelect = document.getElementById('videoSelect').addEventListener('change', function(){
             video.src = this.files[0]['name']
+            frames = []
         })
         
 
         streaming = 0
-        frames = []
         const loadM = new loadModel()
         loadM.prepareModel()
 
@@ -87,7 +88,7 @@
             pred = await loadM.predict(rescaledFrames)
             alert("Class Predicted is -> " + classes[pred])
             document.getElementById('predStatus').innerHTML = "Class Predicted is -> " + classes[pred];
-
+            responsiveVoice.speak(classes[pred], 'Arabic Male');
         }
         function onOpenCvReady(firstTime = 0) {
 
@@ -142,4 +143,5 @@
             }
 
     </script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=Xpk9XX4G"></script>
 </body>

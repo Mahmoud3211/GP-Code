@@ -58,7 +58,7 @@ class DataSet():
     @staticmethod
     def get_data():
         """Load our data from file."""
-        with open('data_file.csv', 'r') as fin:
+        with open('D:/College/2020/GP/Coding/GP-Code/data/data_file.csv', 'r') as fin:
             reader = csv.reader(fin)
             data = list(reader)
 

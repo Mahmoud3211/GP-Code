@@ -33,12 +33,13 @@ def threadsafe_generator(func):
 
 class DataSet():
 
-    def __init__(self, seq_length=40, class_limit=None, image_shape=(224, 224, 3)):
+    def __init__(self, datapath, seq_length=40, class_limit=None, image_shape=(224, 224, 3)):
         """Constructor.
         seq_length = (int) the number of frames to consider
         class_limit = (int) number of classes to limit the data to.
             None = no limit.
         """
+        self.datapath = datapath
         self.seq_length = seq_length
         self.class_limit = class_limit
         self.sequence_path = os.path.join('data', 'sequences')
@@ -55,10 +56,10 @@ class DataSet():
 
         self.image_shape = image_shape
 
-    @staticmethod
-    def get_data():
+    
+    def get_data(self):
         """Load our data from file."""
-        with open('D:/College/2020/GP/Coding/GP-Code/data/data_file.csv', 'r') as fin:
+        with open(os.path.join(self.datapath, 'data_file.csv'), 'r') as fin:
             reader = csv.reader(fin)
             data = list(reader)
 
@@ -301,11 +302,11 @@ class DataSet():
 
         return sequence
 
-    @staticmethod
-    def get_frames_for_sample(sample):
+    
+    def get_frames_for_sample(self, sample):
         """Given a sample row from the data file, get all the corresponding frame
         filenames."""
-        path = os.path.join('data', sample[0], sample[1])
+        path = os.path.join(self.datapath, sample[0], sample[1])
         filename = sample[2]
         images = sorted(glob.glob(os.path.join(path, filename + '*jpg')))
         return images
